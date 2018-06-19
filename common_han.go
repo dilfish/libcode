@@ -9,38 +9,38 @@ import (
 )
 
 
-var commonHan map[rune]int
-var revCommonHan map[int]rune
-var hanIdx = 0
+type CommonHanEncoder struct {
+    commonHan map[rune]int
+    revCommonHan map[int]rune
+    idx int
+}
+
+
 var errBadHanFile = errors.New("bad common han file")
-var errNotInited = errors.New("not inited")
 
 
-func _readCommon(w string) error {
+func (chen *CommonHanEncoder)_readCommon(w string) error {
     r, _ := utf8.DecodeRune([]byte(w))
     c := utf8.RuneCount([]byte(w))
     if c != 1 {
         return errBadHanFile
     }
-    commonHan[r] = hanIdx
-    revCommonHan[hanIdx] = r
-    hanIdx ++
+    chen.commonHan[r] = chen.idx
+    chen.revCommonHan[chen.idx] = r
+    chen.idx ++
     return nil
 }
 
 
-func readCommon(fn string) error {
-    commonHan = make(map[rune]int)
-    revCommonHan = make(map[int]rune)
-    return tools.ReadLine(fn, _readCommon)
+func (chen *CommonHanEncoder) readCommon(fn string) error {
+    chen.commonHan = make(map[rune]int)
+    chen.revCommonHan = make(map[int]rune)
+    return tools.ReadLine(fn, chen._readCommon)
 }
 
 
-func EncodeCommonHan(code rune) int32 {
-    if len(commonHan) == 0 {
-        panic(errNotInited)
-    }
-    idx, ok := commonHan[code]
+func (chen *CommonHanEncoder) EncodeCommonHan(code rune) int32 {
+    idx, ok := chen.commonHan[code]
     if ok == false {
         return BadCode
     }
@@ -48,11 +48,8 @@ func EncodeCommonHan(code rune) int32 {
 }
 
 
-func DecodeCommonHan(off int32) rune {
-    if len(revCommonHan) == 0 {
-        panic(errNotInited)
-    }
-    han, ok := revCommonHan[int(off)]
+func (chen *CommonHanEncoder) DecodeCommonHan(off int32) rune {
+    han, ok := chen.revCommonHan[int(off)]
     if ok == false {
         return BadRune
     }
@@ -60,9 +57,11 @@ func DecodeCommonHan(off int32) rune {
 }
 
 
-func init() {
-    err := readCommon("common_han.txt")
+func NewCommonHan(fn string) (*CommonHanEncoder, error) {
+    chen := new(CommonHanEncoder)
+    err := chen.readCommon(fn)
     if err != nil {
-        panic(err)
+        return nil, err
     }
+    return chen, nil
 }

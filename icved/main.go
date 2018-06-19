@@ -23,15 +23,15 @@ func main() {
         Help()
         return
     }
-    err := libcode.InitLibCode("core_values.txt")
+    lc, err := libcode.NewLibCode("core_values.txt", "common_han.txt")
     if err != nil {
         panic(err)
     }
     str := ""
     if *flagD == false {
-        str = libcode.Encoder(*flagS)
+        str = lc.Encoder(*flagS)
     } else {
-        str, err = libcode.Decoder(*flagS)
+        str, err = lc.Decoder(*flagS)
     }
     fmt.Println(str, err)
 }

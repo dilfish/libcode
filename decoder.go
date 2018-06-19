@@ -6,6 +6,7 @@ import (
     "unicode/utf8"
     "errors"
     "github.com/dilfish/tools"
+    "math"
 )
 
 
@@ -14,11 +15,8 @@ var ErrTooManyEncoder = errors.New("too many encoder")
 var ErrReReg = errors.New("re register")
 
 
-var coreValueMap map[string]int32
-var revCoreValueMap map[int32]string
-var coreValueIdx = int32(0)
-
 // 12 words, default, unicode, common_han using 1 for each
+const TOTAL_CV = 12
 const CHN_PREFIX = 11
 const UNI_PREFIX = 10
 const DEF_PREFIX = 9
@@ -27,23 +25,32 @@ const BadRune = rune(-1)
 const BadCode = int32(-1)
 
 func deBaseFunc(list []int32) rune {
-    v := rune(0)
-    for _, l := range list {
-        v = v * rune(modNum) + rune(l)
+    if list == nil || len(list) == 0 {
+        return BadRune
     }
-    return v
+    v := int64(0)
+    for _, l := range list {
+        v = v * int64(modNum) + int64(l)
+        if v > math.MaxInt32 {
+            return BadRune
+        }
+    }
+    return rune(v)
 }
 
 
-func decodeWord(list []int32) rune {
+func (lc *LibCode) decodeWord(list []int32) rune {
     if len(list) == 0 {
         return 0
     }
     t := list[0]
     code := deBaseFunc(list[1:])
+    if code == BadRune {
+        return BadRune
+    }
     switch t {
         case CHN_PREFIX:
-            return DecodeCommonHan(code)
+            return lc.ch.DecodeCommonHan(code)
         case UNI_PREFIX:
             return DecodeUnicode(code)
         case DEF_PREFIX:
@@ -53,7 +60,7 @@ func decodeWord(list []int32) rune {
 }
 
 
-func decodeIndice(indice []int32) (string, error) {
+func (lc *LibCode) decodeIndice(indice []int32) (string, error) {
     list := make([]int32, 0)
     orig := ""
     for _, index := range indice {
@@ -61,7 +68,7 @@ func decodeIndice(indice []int32) (string, error) {
             list = append(list, index)
             continue
         }
-        o := decodeWord(list)
+        o := lc.decodeWord(list)
         if o == BadRune {
             return "", ErrBadCoreValueStr
         }
@@ -71,7 +78,7 @@ func decodeIndice(indice []int32) (string, error) {
         list = make([]int32, 0)
         list = append(list, index)
     }
-    o := decodeWord(list)
+    o := lc.decodeWord(list)
     if o == BadRune {
         return "", ErrBadCoreValueStr
     }
@@ -82,7 +89,7 @@ func decodeIndice(indice []int32) (string, error) {
 }
 
 
-func unMapCoreValue(cv string) ([]int32, error) {
+func (lc *LibCode) unMapCoreValue(cv string) ([]int32, error) {
     cvs := make([]string, 0)
     list := make([]int32, 0)
     for len(cv) > 0 {
@@ -95,7 +102,7 @@ func unMapCoreValue(cv string) ([]int32, error) {
     }
     for i := 0;i < len(cvs); i = i + 2 {
         cvWord := cvs[i] + cvs[i + 1]
-        idx, ok := coreValueMap[cvWord]
+        idx, ok := lc.coreValueMap[cvWord]
         if ok == false {
             return nil, ErrBadCoreValueStr
         }
@@ -105,12 +112,12 @@ func unMapCoreValue(cv string) ([]int32, error) {
 }
 
 
-func Decoder(cv string) (string, error) {
-    indice, err := unMapCoreValue(cv)
+func (lc *LibCode) Decoder(cv string) (string, error) {
+    indice, err := lc.unMapCoreValue(cv)
     if err != nil {
         return "", err
     }
-    orig, err := decodeIndice(indice)
+    orig, err := lc.decodeIndice(indice)
     if err != nil {
         return "", err
     }
@@ -118,18 +125,14 @@ func Decoder(cv string) (string, error) {
 }
 
 
-func readCoreValue(line string) error {
-    coreValueMap[line] = coreValueIdx
-    revCoreValueMap[coreValueIdx] = line
-    coreValueIdx ++
+func (lc *LibCode) readCoreValue(line string) error {
+    if utf8.RuneCountInString(line) != 2 {
+        return ErrBadCoreValueStr
+    }
+    lc.coreValueMap[line] = lc.idx
+    lc.revCoreValueMap[lc.idx] = line
+    lc.idx ++
     return nil
-}
-
-
-func InitLibCode(cv string) error {
-    coreValueMap = make(map[string]int32)
-    revCoreValueMap = make(map[int32]string)
-    return tools.ReadLine(cv, readCoreValue)
 }
 
 
@@ -146,8 +149,8 @@ func baseFunc(index rune) []int32 {
 }
 
 
-func getCode(r rune) (int32, int32) {
-    code := EncodeCommonHan(r)
+func (lc *LibCode) getCode(r rune) (int32, int32) {
+    code := lc.ch.EncodeCommonHan(r)
     if code != BadCode {
         return code, CHN_PREFIX
     }
@@ -160,8 +163,8 @@ func getCode(r rune) (int32, int32) {
 
 
 // original word to code list
-func getList(r rune) []int32 {
-    code, prefix := getCode(r)
+func (lc *LibCode) getList(r rune) []int32 {
+    code, prefix := lc.getCode(r)
     if code == BadCode {
         return nil
     }
@@ -172,13 +175,40 @@ func getList(r rune) []int32 {
 
 
 // transform original message to core value message
-func Encoder(orig string) string {
+func (lc *LibCode) Encoder(orig string) string {
     cv := ""
     for _, o := range orig {
-        code := getList(rune(o))
+        code := lc.getList(rune(o))
         for _, c := range code {
-            cv = cv + revCoreValueMap[c]
+            cv = cv + lc.revCoreValueMap[c]
         }
     }
     return cv
+}
+
+
+type LibCode struct {
+    coreValueMap map[string]int32
+    revCoreValueMap map[int32]string
+    idx int32
+    ch *CommonHanEncoder
+}
+
+
+func NewLibCode(cv, ch string) (*LibCode, error) {
+    lc := new(LibCode)
+    lc.coreValueMap = make(map[string]int32)
+    lc.revCoreValueMap = make(map[int32]string)
+    err := tools.ReadLine(cv, lc.readCoreValue)
+    if err != nil {
+        return nil, err
+    }
+    if len(lc.coreValueMap) != TOTAL_CV {
+        return nil, ErrBadCoreValueStr
+    }
+    lc.ch, err = NewCommonHan(ch)
+    if err != nil {
+        return nil, err
+    }
+    return lc, nil
 }

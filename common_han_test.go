@@ -8,11 +8,15 @@ import (
 
 
 func TestEncodeCommonHan(t *testing.T) {
-    idx := EncodeCommonHan(rune('一'))
+    ch, err := NewCommonHan("icved/common_han.txt")
+    if err != nil {
+        t.Error("expect nil, got", err)
+    }
+    idx := ch.EncodeCommonHan(rune('一'))
     if idx != 0 {
         t.Error("Expect 1, got", idx)
     }
-    idx = EncodeCommonHan(rune('屮'))
+    idx = ch.EncodeCommonHan(rune('屮'))
     if idx != -1 {
         t.Error("Expect -1, got", idx)
     }
@@ -20,12 +24,24 @@ func TestEncodeCommonHan(t *testing.T) {
 
 
 func TestDecodeCommonHan(t *testing.T) {
-    r := DecodeCommonHan(int32(0))
+    ch, err := NewCommonHan("icved/common_han.txt")
+    if err != nil {
+        t.Error("expect nil, got", err)
+    }
+    r := ch.DecodeCommonHan(int32(0))
     if r != rune('一') {
         t.Error("expect 一, got", string(r), r)
     }
-    r = DecodeCommonHan(2501)
+    r = ch.DecodeCommonHan(2501)
     if r != rune(-1) {
         t.Error("expect -1, got", r, string(r))
+    }
+}
+
+
+func TestBadFile(t *testing.T) {
+    _, err := NewCommonHan("common_han.go")
+    if err != errBadHanFile {
+        t.Error("expect errBadHanFile, got", err)
     }
 }
