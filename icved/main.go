@@ -23,7 +23,7 @@ func main() {
         Help()
         return
     }
-    err := libcode.Init("core_values.txt", "common_han.txt")
+    err := libcode.InitLibCode("core_values.txt")
     if err != nil {
         panic(err)
     }

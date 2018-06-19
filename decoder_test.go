@@ -7,60 +7,49 @@ import (
 )
 
 
-func TestDeBaseFunc(t *testing.T) {
-    list := []int32{1, 2}
-    v := DeBaseFunc(list)
-    if v != 11 {
-        t.Error("v is", v)
-    }
-}
-
-
-func TestCheckPrefix(t *testing.T) {
-    v := CheckPrefix(11)
-    if v != true {
-        t.Error("v is", v)
-    }
-    v = CheckPrefix(1)
-    if v != false {
-        t.Error("v is", v)
-    }
-}
-
-
 func TestDecoder(t *testing.T) {
-    Init()
-    Decoder("民")
-    Decoder("民主")
-    Decoder("文化")
-    Decoder("诚信民主民主法治诚信民主民主爱国诚信民主文明富强")
-}
-
-
-func TestUnMapCoreValue(t *testing.T) {
-    Init()
-    _, err := UnMapCoreValue("民主")
+    err := InitLibCode("icved/core_values.txt")
     if err != nil {
-        t.Error("err is", err)
+        t.Error("expect init good, got", err)
     }
-    _, err = UnMapCoreValue("民主自由")
+    r, err := Decoder("友善法治爱国爱国")
     if err != nil {
-        t.Error("err is", err)
+        t.Error("exptect nil, got", err)
+    }
+    if r != "我" {
+        t.Error("expect 我, got", []byte(r), []byte("我"))
+    }
+    r, err = Decoder("诚信民主平等民主法治富强")
+    if err != nil {
+        t.Error("expect nil, got", err)
+    }
+    if r != "屮" {
+        t.Error("expect 屮, got", []byte(r), []byte("屮"))
+    }
+    r, err = Decoder("敬业民主民主法治敬业民主民主爱国敬业民主文明富强")
+    if err != nil {
+        t.Error("expect nil, got", err)
+    }
+    if r != "abc" {
+        t.Error("expect abc, got", r)
+    }
+    _, err = Decoder("真")
+    if err != ErrBadCoreValueStr {
+        t.Error("expect ErrBadCoreValueStr, got", err)
+    }
+    _, err = Decoder("测试")
+    if err != ErrBadCoreValueStr {
+        t.Error("expect ErrBadCoreValueStr, got", err)
     }
 }
 
 
 func TestEncoder(t *testing.T) {
+    err := InitLibCode("icved/core_values.txt")
+    if err != nil {
+        t.Error("expect init good, got", err)
+    }
     Encoder("abc")
     Encoder("一")
     Encoder("屮")
-}
-
-
-func TestDecodeIndice(t *testing.T) {
-    list := []int32{11,1,1,1,1,1,1,1}
-    s, err := DecodeIndice(list)
-    if err != ErrBadCoreValueStr {
-        t.Error("expect error, got", s, err)
-    }
 }

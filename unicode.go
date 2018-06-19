@@ -2,33 +2,25 @@
 
 package libcode
 
+
 // ref: www.unicode.org/versions/Uncide5.0.0/ch12.pdf
 // range:
 // 0x4e00-0x9fff
 // 0x3400-0x4dff
 // combined: 0x3400-0x9fff
-// prefix: 11
-func EncodeUnicode(code rune) int32 {
-    if code < 0x3400 || code > 0x9fff {
-        return -1
+func EncodeUnicode(r rune) int32 {
+    if r < 0x3400 || r > 0x9fff {
+        return BadCode
     }
-    offset := code - 0x3400
+    offset := r - 0x3400
     return int32(offset)
 }
 
 
-func DecodeUnicode(offset int32) rune {
-    offset = offset + 0x3400
-    if offset < 0x3400 || offset > 0x9fff {
-        return rune(-1)
+func DecodeUnicode(code int32) rune {
+    code = code + 0x3400
+    if code < 0x3400 || code > 0x9fff {
+        return BadRune
     }
-    return rune(offset)
-}
-
-
-func init() {
-    err := RegisterEncoderDecoder(EncodeUnicode, DecodeUnicode, "unicode", 5)
-    if err != nil {
-        panic(err)
-    }
+    return rune(code)
 }

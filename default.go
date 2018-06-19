@@ -11,8 +11,3 @@ func EncodeDefault(word rune) int32 {
 func DecodeDefault(off int32) rune {
     return rune(off)
 }
-
-
-func InitDefault() error {
-    return RegisterEncoderDecoder(EncodeDefault, DecodeDefault, "default", Ring10)
-}

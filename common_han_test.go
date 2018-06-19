@@ -22,10 +22,10 @@ func TestEncodeCommonHan(t *testing.T) {
 func TestDecodeCommonHan(t *testing.T) {
     r := DecodeCommonHan(int32(0))
     if r != rune('一') {
-        t.Error("expect 一, got", string(r))
+        t.Error("expect 一, got", string(r), r)
     }
     r = DecodeCommonHan(2501)
     if r != rune(-1) {
-        t.Error("expect -1, got", r)
+        t.Error("expect -1, got", r, string(r))
     }
 }
