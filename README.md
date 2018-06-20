@@ -2,7 +2,6 @@
 [![Build Status](https://travis-ci.org/dilfish/libcode.svg?branch=master)](https://travis-ci.org/dilfish/libcode)
 [![codecov](https://codecov.io/gh/dilfish/libcode/branch/master/graph/badge.svg)](https://codecov.io/gh/dilfish/libcode)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](github.com/dilfish/libcode)
-![GitHub tag](https://img.shields.io/github/tag/expressjs/express.svg)
 
 ### a general encoder/decoder for Chinese obfuscation
 ### inspired by https://sym233.github.io/core-values-encoder/
