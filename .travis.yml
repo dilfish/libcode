@@ -9,3 +9,6 @@ before_install:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic
