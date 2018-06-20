@@ -1,7 +1,11 @@
-go_import_path: github.com/dilfish/tools
-
 language: go
 
 go:
   - "1.10.x"
   - master
+
+before_install:
+  - go get -t -v ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
