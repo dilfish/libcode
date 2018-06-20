@@ -4,6 +4,7 @@ package libcode
 
 import (
     "testing"
+    "unicode/utf8"
 )
 
 
@@ -33,7 +34,7 @@ func TestDecodeCommonHan(t *testing.T) {
         t.Error("expect 一, got", string(r), r)
     }
     r = ch.DecodeCommonHan(2501)
-    if r != rune(-1) {
+    if r != utf8.RuneError {
         t.Error("expect -1, got", r, string(r))
     }
 }

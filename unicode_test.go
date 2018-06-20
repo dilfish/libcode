@@ -4,6 +4,7 @@ package libcode
 
 import (
     "testing"
+    "unicode/utf8"
 )
 
 
@@ -26,8 +27,8 @@ func TestEncodeUnicode(t *testing.T) {
 
 func TestDecodeUnicode(t *testing.T) {
     table := []int32{
-        -1, -1,
-        0x9fff, -1,
+        -1, utf8.RuneError,
+        0x9fff, utf8.RuneError,
         0x20, 0x3400 + 0x20,
     }
     for idx, tb := range table {

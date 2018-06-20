@@ -49,6 +49,22 @@ func TestDecoder(t *testing.T) {
     if err != ErrBadCoreValueStr {
         t.Error("expect ErrBadCoreValueStr, got", err, r)
     }
+    r, err = lc.Decoder("友善")
+    if err != ErrBadCoreValueStr {
+        t.Error("expect ErrBadCoreValueStr, got", err, r)
+    }
+    str := "友善法治法治法治法治法治法治法治法治法治"
+    str = str + "法治法治法治法治法治法治法治法治法治法治法治"
+    str = str + "法治法治法治法治法治法治法治法治法治法治法治"
+    str = str + "法治法治法治法治法治"
+    r, err = lc.Decoder(str)
+    if err != ErrBadCoreValueStr {
+        t.Error("expect ErrBadCoreValueStr, got", err, r)
+    }
+    _, err = lc.Decoder("友善友善")
+    if err != ErrBadCoreValueStr {
+        t.Error("exptect nil, got", err)
+    }
 }
 
 

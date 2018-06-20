@@ -20,8 +20,9 @@ const TOTAL_CV = 12
 const CHN_PREFIX = 11
 const UNI_PREFIX = 10
 const DEF_PREFIX = 9
+const BAD_PREFIX = -1
 const modNum = int32(9)
-const BadRune = rune(-1)
+const BadRune = utf8.RuneError
 const BadCode = int32(-1)
 
 func deBaseFunc(list []int32) rune {
@@ -165,9 +166,6 @@ func (lc *LibCode) getCode(r rune) (int32, int32) {
 // original word to code list
 func (lc *LibCode) getList(r rune) []int32 {
     code, prefix := lc.getCode(r)
-    if code == BadCode {
-        return nil
-    }
     list := baseFunc(code)
     list = append([]int32{prefix}, list...)
     return list
