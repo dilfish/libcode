@@ -3,6 +3,7 @@
 ### inspired by https://sym233.github.io/core-values-encoder/
 
 [![Build Status](https://travis-ci.org/dilfish/libcode.svg?branch=master)](https://travis-ci.org/dilfish/libcode)
+[![codecov](https://codecov.io/gh/dilfish/libcode/branch/master/graph/badge.svg)](https://codecov.io/gh/dilfish/libcode)
 
 
 #### encode:
