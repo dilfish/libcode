@@ -4,6 +4,8 @@
 
 [![Build Status](https://travis-ci.org/dilfish/libcode.svg?branch=master)](https://travis-ci.org/dilfish/libcode)
 [![codecov](https://codecov.io/gh/dilfish/libcode/branch/master/graph/badge.svg)](https://codecov.io/gh/dilfish/libcode)
+[![GitHub package version](https://img.shields.io/github/package-json/v/badges/shields.svg?style=flat-square)](github.com/dilfish/libcode)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](github.com/dilfish/libcode)
 
 
 #### encode:
