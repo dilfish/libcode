@@ -2,6 +2,8 @@
 ### a general encoder/decoder for Chinese obfuscation
 ### inspired by https://sym233.github.io/core-values-encoder/
 
+[![Build Status](https://travis-ci.org/dilfish/libcode.svg?branch=master)](https://travis-ci.org/dilfish/libcode)
+
 
 #### encode:
 - 2500 common used Chinese character: map to 1-2500, map to 9 based number list with prefix 11
