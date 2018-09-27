@@ -19,10 +19,16 @@ func (c *Case) Encrypt(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(c.t, http.StatusOK, r.Code)
 }
 
+func (c *Case) Decrypt(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+	assert.Equal(c.t, plain, r.Body.String())
+	assert.Equal(c.t, http.StatusOK, r.Code)
+}
+
 func TestHandle(t *testing.T) {
 	r := gofight.New()
 	e := Engine()
 	var c Case
 	c.t = t
-	r.GET("/e/abc").SetDebug(true).Run(e, c.Encrypt)
+	r.GET("/e/"+plain).SetDebug(true).Run(e, c.Encrypt)
+	r.GET("/d/"+crypted).SetDebug(true).Run(e, c.Decrypt)
 }

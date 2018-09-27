@@ -11,23 +11,21 @@ import (
 )
 
 var flagP = flag.String("d", "", "decode message")
-var glc *libcode.LibCode
 
-func Handle(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("uri is", r.RequestURI)
-	if r.RequestURI == "/e/abc" {
-		io.WriteString(w, "aaaa")
-		return
-	}
-	uri := r.RequestURI
+type Handler struct {
+	lc *libcode.LibCode
+}
+
+func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
+	uri := r.URL.Path
 	etag := "/e/"
 	dtag := "/d/"
 	if len(uri) > len(etag) && strings.Index(uri, etag) == 0 {
-		io.WriteString(w, glc.Encoder(uri[len(etag):]))
+		io.WriteString(w, h.lc.Encoder(uri[len(etag):]))
 		return
 	}
 	if len(uri) > len(dtag) && strings.Index(uri, dtag) == 0 {
-		ret, err := glc.Decoder(uri[len(dtag):])
+		ret, err := h.lc.Decoder(uri[len(dtag):])
 		if err != nil {
 			io.WriteString(w, err.Error())
 			return
@@ -44,9 +42,10 @@ func Engine() http.Handler {
 	if err != nil {
 		panic(err)
 	}
-	glc = lc
+	var h Handler
+	h.lc = lc
 	mux := tools.NewLogMux("./log.log", "icved")
-	mux.Handle("/", Handle)
+	mux.Handle("/", h.Handle)
 	return mux
 }
 
