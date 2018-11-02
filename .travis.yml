@@ -12,3 +12,5 @@ after_success:
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - env GO111MODULE=on go build
+  - env GO111MODULE=on go test

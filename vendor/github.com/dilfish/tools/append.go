@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-    "sync"
 	"time"
 )
 
@@ -16,8 +15,6 @@ type AppendStruct struct {
 	cClose chan bool
 	fn     string
 	err    error
-    pid    int
-    lock   sync.Mutex
 }
 
 func openFile(fn string) (*os.File, error) {
@@ -25,9 +22,11 @@ func openFile(fn string) (*os.File, error) {
 }
 
 func (as *AppendStruct) wait() {
+	signal.Notify(as.c, syscall.SIGUSR1)
 	for {
 		select {
 		case <-as.c:
+			<-as.c
 			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
 			f, err := openFile(as.fn)
 			if err != nil {
@@ -36,12 +35,7 @@ func (as *AppendStruct) wait() {
 				time.Sleep(time.Second)
 				continue
 			}
-            as.lock.Lock()
-            if as.file != nil {
-                as.file.Close()
-            }
 			as.file = f
-            as.lock.Unlock()
 		case <-as.cClose:
 			signal.Reset(syscall.SIGUSR1)
 			return
@@ -59,18 +53,13 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	as.fn = fn
 	as.c = make(chan os.Signal)
 	as.cClose = make(chan bool)
-    as.pid = os.Getpid()
-    signal.Notify(as.c, syscall.SIGUSR1)
 	go as.wait()
 	return &as, nil
 }
 
 func (as *AppendStruct) Close() {
-    as.lock.Lock()
-    defer as.lock.Unlock()
 	as.cClose <- true
 	as.file.Close()
-    as.file = nil
 	close(as.c)
 	close(as.cClose)
 }
@@ -79,8 +68,6 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	if as.err != nil {
 		return 0, as.err
 	}
-    as.lock.Lock()
-    defer as.lock.Unlock()
 	n, err := as.file.Write(bt)
 	if err != nil {
 		as.err = err

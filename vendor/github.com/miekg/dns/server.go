@@ -416,12 +416,13 @@ func (srv *Server) Shutdown() error {
 // to terminate.
 func (srv *Server) ShutdownContext(ctx context.Context) error {
 	srv.lock.Lock()
-	if !srv.started {
-		srv.lock.Unlock()
+	started := srv.started
+	srv.started = false
+	srv.lock.Unlock()
+
+	if !started {
 		return &Error{err: "server not started"}
 	}
-
-	srv.started = false
 
 	if srv.PacketConn != nil {
 		srv.PacketConn.SetReadDeadline(aLongTimeAgo) // Unblock reads
@@ -431,10 +432,10 @@ func (srv *Server) ShutdownContext(ctx context.Context) error {
 		srv.Listener.Close()
 	}
 
+	srv.lock.Lock()
 	for rw := range srv.conns {
 		rw.SetReadDeadline(aLongTimeAgo) // Unblock reads
 	}
-
 	srv.lock.Unlock()
 
 	if testShutdownNotify != nil {
@@ -665,16 +666,7 @@ func (srv *Server) serveDNS(w *response) {
 }
 
 func (srv *Server) readTCP(conn net.Conn, timeout time.Duration) ([]byte, error) {
-	// If we race with ShutdownContext, the read deadline may
-	// have been set in the distant past to unblock the read
-	// below. We must not override it, otherwise we may block
-	// ShutdownContext.
-	srv.lock.RLock()
-	if srv.started {
-		conn.SetReadDeadline(time.Now().Add(timeout))
-	}
-	srv.lock.RUnlock()
-
+	conn.SetReadDeadline(time.Now().Add(timeout))
 	l := make([]byte, 2)
 	n, err := conn.Read(l)
 	if err != nil || n != 2 {
@@ -709,13 +701,7 @@ func (srv *Server) readTCP(conn net.Conn, timeout time.Duration) ([]byte, error)
 }
 
 func (srv *Server) readUDP(conn *net.UDPConn, timeout time.Duration) ([]byte, *SessionUDP, error) {
-	srv.lock.RLock()
-	if srv.started {
-		// See the comment in readTCP above.
-		conn.SetReadDeadline(time.Now().Add(timeout))
-	}
-	srv.lock.RUnlock()
-
+	conn.SetReadDeadline(time.Now().Add(timeout))
 	m := srv.udpPool.Get().([]byte)
 	n, s, err := ReadFromSessionUDP(conn, m)
 	if err != nil {
@@ -767,33 +753,24 @@ func (w *response) Write(m []byte) (int, error) {
 
 		n, err := io.Copy(w.tcp, bytes.NewReader(m))
 		return int(n), err
-	default:
-		panic("dns: Write called after Close")
 	}
+	panic("not reached")
 }
 
 // LocalAddr implements the ResponseWriter.LocalAddr method.
 func (w *response) LocalAddr() net.Addr {
-	switch {
-	case w.udp != nil:
-		return w.udp.LocalAddr()
-	case w.tcp != nil:
+	if w.tcp != nil {
 		return w.tcp.LocalAddr()
-	default:
-		panic("dns: LocalAddr called after Close")
 	}
+	return w.udp.LocalAddr()
 }
 
 // RemoteAddr implements the ResponseWriter.RemoteAddr method.
 func (w *response) RemoteAddr() net.Addr {
-	switch {
-	case w.udpSession != nil:
-		return w.udpSession.RemoteAddr()
-	case w.tcp != nil:
+	if w.tcp != nil {
 		return w.tcp.RemoteAddr()
-	default:
-		panic("dns: RemoteAddr called after Close")
 	}
+	return w.udpSession.RemoteAddr()
 }
 
 // TsigStatus implements the ResponseWriter.TsigStatus method.

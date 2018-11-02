@@ -2,26 +2,26 @@
 github.com/appleboy/gofight
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/dilfish/tools v0.0.0-20181102112406-2643c62e4f55
+# github.com/dilfish/tools v0.0.0-20180929085222-f49790a397d8
 github.com/dilfish/tools
 # github.com/go-sql-driver/mysql v1.4.0
 github.com/go-sql-driver/mysql
-# github.com/miekg/dns v1.0.13
+# github.com/miekg/dns v1.0.12
 github.com/miekg/dns
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/stretchr/testify v1.2.2
 github.com/stretchr/testify/assert
-# golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e
+# golang.org/x/crypto v0.0.0-20181001203147-e3636079e1a4
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
-# golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
+# golang.org/x/net v0.0.0-20181005035420-146acd28ed58
 golang.org/x/net/ipv4
 golang.org/x/net/ipv6
 golang.org/x/net/bpf
 golang.org/x/net/internal/iana
 golang.org/x/net/internal/socket
-# golang.org/x/sys v0.0.0-20181011152604-fa43e7bc11ba
+# golang.org/x/sys v0.0.0-20181005133103-4497e2df6f9e
 golang.org/x/sys/unix
 # google.golang.org/appengine v1.2.0
 google.golang.org/appengine/cloudsql

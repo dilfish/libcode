@@ -2,6 +2,7 @@ package tools
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"errors"
@@ -9,6 +10,8 @@ import (
 	"io"
 	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -51,8 +54,51 @@ func ReadFile(fn string) ([]byte, error) {
 	return ioutil.ReadAll(file)
 }
 
+func DoPost(url string, v *url.Values) ([]byte, error) {
+	resp, err := http.PostForm(url, *v)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
+}
+
+func DoGet(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
+}
 
 type LineFunc func(line string) error
+
+func GetAsLine(uri string, lf LineFunc) error {
+	bt, err := DoGet(uri)
+	if err != nil {
+		return err
+	}
+	buf := bytes.NewBuffer(bt)
+	for {
+		line, err := buf.ReadString('\n')
+		if err != nil && err != io.EOF {
+			return err
+		}
+		if err == io.EOF {
+			break
+		}
+		if line == "" {
+			continue
+		}
+		line = line[:len(line)-1]
+		err = lf(line)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func ReadLineArr(fn string, lf LineFunc, split int) error {
 	return readLine(fn, lf, split)
@@ -131,4 +177,9 @@ func unixTo(unix int64, name string) time.Time {
 
 func TimeStr() string {
 	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+func FormatTime(sec int64) string {
+	t := time.Unix(sec, 0)
+	return t.Local().Format("2006-01-02 15:04:05")
 }

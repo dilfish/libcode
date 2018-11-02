@@ -11,6 +11,6 @@ func BasicHello(w http.ResponseWriter, r *http.Request) {
 
 func Engine() http.Handler {
 	mux := NewLogMux("./log.log", "httplog")
-	mux.GET("/srv", BasicHello)
+	mux.Handle("/srv", BasicHello)
 	return mux
 }
