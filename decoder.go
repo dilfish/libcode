@@ -20,16 +20,16 @@ var ErrReReg = errors.New("re register")
 
 
 // 12 words, default, unicode, common_han using 1 for each
-// TOTAL_CV is 12 because Mr Xi only uses 12 words as core value
-const TOTAL_CV = 12
-// CHN_PREFIX used as chinese word
-const CHN_PREFIX = 11
-// UNI_PREFIX used as unicode point
-const UNI_PREFIX = 10
-// DEF_PREFIX used as default encoder
-const DEF_PREFIX = 9
-// BAD_PREFIX used as others
-const BAD_PREFIX = -1
+// TotalCv is 12 because Mr Xi only uses 12 words as core value
+const TotalCv = 12
+// ChnPrefix used as chinese word
+const ChnPrefix = 11
+// UniPrefix used as unicode point
+const UniPrefix = 10
+// DefPrefix used as default encoder
+const DefPrefix = 9
+// BadPrefix used as others
+const BadPrefix = -1
 const modNum = int32(9)
 // BadRune is defines in utf8 lib
 const BadRune = utf8.RuneError
@@ -61,11 +61,11 @@ func (lc *LibCode) decodeWord(list []int32) rune {
         return BadRune
     }
     switch t {
-        case CHN_PREFIX:
+        case ChnPrefix:
             return lc.ch.DecodeCommonHan(code)
-        case UNI_PREFIX:
+        case UniPrefix:
             return DecodeUnicode(code)
-        case DEF_PREFIX:
+        case DefPrefix:
             return DecodeDefault(code)
     }
     return BadRune
@@ -73,10 +73,10 @@ func (lc *LibCode) decodeWord(list []int32) rune {
 
 
 func (lc *LibCode) decodeIndice(indice []int32) (string, error) {
-    list := make([]int32, 0)
+    var list []int32
     orig := ""
     for _, index := range indice {
-        if index != CHN_PREFIX && index != DEF_PREFIX && index != UNI_PREFIX {
+        if index != ChnPrefix && index != DefPrefix && index != UniPrefix {
             list = append(list, index)
             continue
         }
@@ -102,8 +102,8 @@ func (lc *LibCode) decodeIndice(indice []int32) (string, error) {
 
 
 func (lc *LibCode) unMapCoreValue(cv string) ([]int32, error) {
-    cvs := make([]string, 0)
-    list := make([]int32, 0)
+    var cvs []string
+    var list []int32
     for len(cv) > 0 {
         r, size := utf8.DecodeLastRuneInString(cv)
         cv = cv[:len(cv) - size]
@@ -151,7 +151,7 @@ func (lc *LibCode) readCoreValue(line string) error {
 
 
 func baseFunc(index rune) []int32 {
-    off := make([]int32, 0)
+    var off []int32
     for index > modNum {
         num := index % modNum
         index = index / modNum
@@ -166,13 +166,13 @@ func baseFunc(index rune) []int32 {
 func (lc *LibCode) getCode(r rune) (int32, int32) {
     code := lc.ch.EncodeCommonHan(r)
     if code != BadCode {
-        return code, CHN_PREFIX
+        return code, ChnPrefix
     }
     code = EncodeUnicode(r)
     if code != BadCode {
-        return code, UNI_PREFIX
+        return code, UniPrefix
     }
-    return EncodeDefault(r), DEF_PREFIX
+    return EncodeDefault(r), DefPrefix
 }
 
 
@@ -215,7 +215,7 @@ func NewLibCode(cv, ch string) (*LibCode, error) {
     if err != nil {
         return nil, err
     }
-    if len(lc.coreValueMap) != TOTAL_CV {
+    if len(lc.coreValueMap) != TotalCv {
         return nil, ErrBadCoreValueStr
     }
     lc.ch, err = NewCommonHan(ch)
