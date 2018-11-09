@@ -2,7 +2,7 @@
 
 package libcode
 
-// EncodeUnicde used the chinese unicode map as
+// EncodeUnicode used the chinese unicode map as
 // offset to map a list of word
 // ref: www.unicode.org/versions/Uncide5.0.0/ch12.pdf
 // range:
