@@ -1,4 +1,4 @@
-// use common han 2500 words
+// Copyright 2018 Sean.ZH
 
 package libcode
 
@@ -9,6 +9,8 @@ import (
 )
 
 
+// CommonHanEncoder is the least priority encoder for libcode
+// it just map a word's unicode point to a int32 value
 type CommonHanEncoder struct {
     commonHan map[rune]int
     revCommonHan map[int]rune
@@ -39,6 +41,8 @@ func (chen *CommonHanEncoder) readCommon(fn string) error {
 }
 
 
+// EncodeCommonHan encodes a word to int32 as it's unicode point
+// using the comon 2500 Chinese characters
 func (chen *CommonHanEncoder) EncodeCommonHan(code rune) int32 {
     idx, ok := chen.commonHan[code]
     if ok == false {
@@ -48,6 +52,8 @@ func (chen *CommonHanEncoder) EncodeCommonHan(code rune) int32 {
 }
 
 
+// DecodeCommonHan read a int32 as unicode point and map it
+// to a char 
 func (chen *CommonHanEncoder) DecodeCommonHan(off int32) rune {
     han, ok := chen.revCommonHan[int(off)]
     if ok == false {
@@ -57,6 +63,7 @@ func (chen *CommonHanEncoder) DecodeCommonHan(off int32) rune {
 }
 
 
+// NewCommonHan provide a new service
 func NewCommonHan(fn string) (*CommonHanEncoder, error) {
     chen := new(CommonHanEncoder)
     err := chen.readCommon(fn)

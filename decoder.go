@@ -1,4 +1,4 @@
-// encoder and decoder
+// Copyright 2018 Sean.ZH
 
 package libcode
 
@@ -10,19 +10,30 @@ import (
 )
 
 
+// ErrBadCoreValueStr indicate an invalid string which could
+// not resolved as list of code
 var ErrBadCoreValueStr = errors.New("bad core value string")
+// ErrTooManyEncoder indicate that you registerd more than 12 encoder
 var ErrTooManyEncoder = errors.New("too many encoder")
+// ErrReReg indicate that you register a registerd encoder
 var ErrReReg = errors.New("re register")
 
 
 // 12 words, default, unicode, common_han using 1 for each
+// TOTAL_CV is 12 because Mr Xi only uses 12 words as core value
 const TOTAL_CV = 12
+// CHN_PREFIX used as chinese word
 const CHN_PREFIX = 11
+// UNI_PREFIX used as unicode point
 const UNI_PREFIX = 10
+// DEF_PREFIX used as default encoder
 const DEF_PREFIX = 9
+// BAD_PREFIX used as others
 const BAD_PREFIX = -1
 const modNum = int32(9)
+// BadRune is defines in utf8 lib
 const BadRune = utf8.RuneError
+// BadCode is defined negative value
 const BadCode = int32(-1)
 
 func deBaseFunc(list []int32) rune {
@@ -113,6 +124,8 @@ func (lc *LibCode) unMapCoreValue(cv string) ([]int32, error) {
 }
 
 
+// Decoder read a list of encoded string
+// and send them to right decoder
 func (lc *LibCode) Decoder(cv string) (string, error) {
     indice, err := lc.unMapCoreValue(cv)
     if err != nil {
@@ -163,7 +176,6 @@ func (lc *LibCode) getCode(r rune) (int32, int32) {
 }
 
 
-// original word to code list
 func (lc *LibCode) getList(r rune) []int32 {
     code, prefix := lc.getCode(r)
     list := baseFunc(code)
@@ -172,7 +184,7 @@ func (lc *LibCode) getList(r rune) []int32 {
 }
 
 
-// transform original message to core value message
+// Encoder transform original message to core value message
 func (lc *LibCode) Encoder(orig string) string {
     cv := ""
     for _, o := range orig {
@@ -185,6 +197,7 @@ func (lc *LibCode) Encoder(orig string) string {
 }
 
 
+// LibCode defines a list of encoder decoder pair
 type LibCode struct {
     coreValueMap map[string]int32
     revCoreValueMap map[int32]string
@@ -193,6 +206,7 @@ type LibCode struct {
 }
 
 
+// NewLibCode get an object
 func NewLibCode(cv, ch string) (*LibCode, error) {
     lc := new(LibCode)
     lc.coreValueMap = make(map[string]int32)
