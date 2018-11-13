@@ -1,3 +1,4 @@
+// Copyright 2018 Sean.ZH
 // test common han 2500 words
 
 package libcode
@@ -9,7 +10,7 @@ import (
 
 
 func TestEncodeCommonHan(t *testing.T) {
-    ch, err := NewCommonHan("icved/common_han.txt")
+    ch, err := NewCommonHan("app/icved/common_han.txt")
     if err != nil {
         t.Error("expect nil, got", err)
     }
@@ -25,7 +26,7 @@ func TestEncodeCommonHan(t *testing.T) {
 
 
 func TestDecodeCommonHan(t *testing.T) {
-    ch, err := NewCommonHan("icved/common_han.txt")
+    ch, err := NewCommonHan("app/icved/common_han.txt")
     if err != nil {
         t.Error("expect nil, got", err)
     }

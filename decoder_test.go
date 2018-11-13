@@ -1,3 +1,4 @@
+// Copyright 2018 Sean.ZH
 // decoder encoder test 
 
 package libcode
@@ -8,7 +9,7 @@ import (
 
 
 func TestDecoder(t *testing.T) {
-    lc, err := NewLibCode("icved/core_values.txt", "icved/common_han.txt")
+    lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt")
     if err != nil {
         t.Error("expect init good, got", err)
     }
@@ -69,7 +70,7 @@ func TestDecoder(t *testing.T) {
 
 
 func TestEncoder(t *testing.T) {
-    lc, err := NewLibCode("icved/core_values.txt", "icved/common_han.txt")
+    lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt")
     if err != nil {
         t.Error("expect init good, got", err)
     }
@@ -93,7 +94,7 @@ func TestInit(t *testing.T) {
     if err != ErrBadCoreValueStr {
         t.Error("expect ErrBadCoreValueStr, got", err)
     }
-    _, err = NewLibCode("icved/core_values.txt", "common_han.go")
+    _, err = NewLibCode("app/icved/core_values.txt", "common_han.go")
     if err != errBadHanFile {
         t.Error("expect errBadHanFile, got", err)
     }
