@@ -4,46 +4,43 @@
 package libcode
 
 import (
-    "testing"
-    "unicode/utf8"
+	"testing"
+	"unicode/utf8"
 )
 
-
 func TestEncodeCommonHan(t *testing.T) {
-    ch, err := NewCommonHan("app/icved/common_han.txt")
-    if err != nil {
-        t.Error("expect nil, got", err)
-    }
-    idx := ch.EncodeCommonHan(rune('一'))
-    if idx != 0 {
-        t.Error("Expect 1, got", idx)
-    }
-    idx = ch.EncodeCommonHan(rune('屮'))
-    if idx != -1 {
-        t.Error("Expect -1, got", idx)
-    }
+	ch, err := NewCommonHan("app/icved/common_han.txt")
+	if err != nil {
+		t.Error("expect nil, got", err)
+	}
+	idx := ch.EncodeCommonHan(rune('一'))
+	if idx != 0 {
+		t.Error("Expect 1, got", idx)
+	}
+	idx = ch.EncodeCommonHan(rune('屮'))
+	if idx != -1 {
+		t.Error("Expect -1, got", idx)
+	}
 }
-
 
 func TestDecodeCommonHan(t *testing.T) {
-    ch, err := NewCommonHan("app/icved/common_han.txt")
-    if err != nil {
-        t.Error("expect nil, got", err)
-    }
-    r := ch.DecodeCommonHan(int32(0))
-    if r != rune('一') {
-        t.Error("expect 一, got", string(r), r)
-    }
-    r = ch.DecodeCommonHan(2501)
-    if r != utf8.RuneError {
-        t.Error("expect -1, got", r, string(r))
-    }
+	ch, err := NewCommonHan("app/icved/common_han.txt")
+	if err != nil {
+		t.Error("expect nil, got", err)
+	}
+	r := ch.DecodeCommonHan(int32(0))
+	if r != rune('一') {
+		t.Error("expect 一, got", string(r), r)
+	}
+	r = ch.DecodeCommonHan(2501)
+	if r != utf8.RuneError {
+		t.Error("expect -1, got", r, string(r))
+	}
 }
 
-
 func TestBadFile(t *testing.T) {
-    _, err := NewCommonHan("common_han.go")
-    if err != errBadHanFile {
-        t.Error("expect errBadHanFile, got", err)
-    }
+	_, err := NewCommonHan("common_han.go")
+	if err != errBadHanFile {
+		t.Error("expect errBadHanFile, got", err)
+	}
 }
