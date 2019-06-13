@@ -1,36 +1,42 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
-	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
 
-type Client interface {
-	GetUser(id string) (*User, error)
-}
-
-type client struct {
+// Cli package a http client and baseurl
+type Cli struct {
 	http.Client
 	baseURL string
 }
 
-type User struct {
-	name  string
-	email string
-}
-
-func New(url string) Client {
-	return &client{
+// New create an cli object
+func New(url string, sec int) *Cli {
+	return &Cli{
 		http.Client{
-			Timeout: time.Duration(1) * time.Second,
+			Timeout: time.Duration(sec) * time.Second,
 		},
 		url,
 	}
 }
 
-func (c *client) GetUser(id string) (*User, error) {
-	req, err := http.NewRequest("GET", c.baseURL+"/user/"+id, nil)
+// SetBaseURL change base url for the client
+func (c *Cli) SetBaseURL(u string) {
+	c.baseURL = u
+}
+
+// GetBaseURL returns current baseUrl
+func (c *Cli) GetBaseURL() string {
+	return c.baseURL
+}
+
+// Get do a get for client
+func (c *Cli) Get(u string) ([]byte, error) {
+	req, err := http.NewRequest("GET", c.baseURL+u, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -39,10 +45,5 @@ func (c *client) GetUser(id string) (*User, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	var user *User
-	err = json.NewDecoder(resp.Body).Decode(&user)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return ioutil.ReadAll(resp.Body)
 }

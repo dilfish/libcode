@@ -8,7 +8,7 @@ API Handler Testing for Golang framework.
 
 * [x] [Http Handler](https://golang.org/pkg/net/http/) Golang package http provides HTTP client and server implementations.
 * [x] [Gin](https://github.com/gin-gonic/gin)
-* [x] [Echo](https://github.com/labstack/echo) support [v3.0.0](https://github.com/labstack/echo/releases/tag/v3.0.0) up
+* [x] [Echo](https://github.com/labstack/echo)
 * [x] [Mux](https://github.com/gorilla/mux)
 * [x] [HttpRouter](https://github.com/julienschmidt/httprouter)
 
@@ -222,7 +222,7 @@ func TestQueryString(t *testing.T) {
   r := gofight.New()
 
   r.GET("/hello").
-    SetCookie(gofight.H{
+    SetQuery(gofight.H{
       "foo": "bar",
     }).
     Run(BasicEngine, func(r HTTPResponse, rq HTTPRequest) {

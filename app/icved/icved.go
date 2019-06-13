@@ -45,7 +45,7 @@ func Engine() http.Handler {
 	var h Handler
 	h.lc = lc
 	mux := tools.NewLogMux("./log.log", "icved")
-	mux.Handle("/", h.Handle)
+	mux.GET("/", h.Handle)
 	return mux
 }
 
