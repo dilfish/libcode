@@ -48,7 +48,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine"
 	"github.com/labstack/echo/test"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -77,9 +76,6 @@ type HTTPRequest *http.Request
 
 // EchoHTTPResponse is HTTP response type for echo framework
 type EchoHTTPResponse *test.ResponseRecorder
-
-// EchoHTTPRequest is HTTP request type for echo framework
-type EchoHTTPRequest engine.Request
 
 // ResponseFunc response handling func type
 type ResponseFunc func(HTTPResponse, HTTPRequest)
