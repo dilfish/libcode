@@ -5,6 +5,7 @@ package libcode
 import (
 	"errors"
 	"github.com/dilfish/tools"
+	"log"
 	"unicode/utf8"
 )
 
@@ -22,6 +23,7 @@ func (chen *CommonHanEncoder) _readCommon(w string) error {
 	r, _ := utf8.DecodeRune([]byte(w))
 	c := utf8.RuneCount([]byte(w))
 	if c != 1 {
+		log.Println("read common error:", c)
 		return errBadHanFile
 	}
 	chen.commonHan[r] = chen.idx
@@ -41,6 +43,7 @@ func (chen *CommonHanEncoder) readCommon(fn string) error {
 func (chen *CommonHanEncoder) EncodeCommonHan(code rune) int32 {
 	idx, ok := chen.commonHan[code]
 	if ok == false {
+		log.Println("not a valid common han:", code)
 		return BadCode
 	}
 	return int32(idx)
@@ -51,6 +54,7 @@ func (chen *CommonHanEncoder) EncodeCommonHan(code rune) int32 {
 func (chen *CommonHanEncoder) DecodeCommonHan(off int32) rune {
 	han, ok := chen.revCommonHan[int(off)]
 	if ok == false {
+		log.Println("not a valid unicode:", off)
 		return BadRune
 	}
 	return rune(han)
@@ -61,6 +65,7 @@ func NewCommonHan(fn string) (*CommonHanEncoder, error) {
 	chen := new(CommonHanEncoder)
 	err := chen.readCommon(fn)
 	if err != nil {
+		log.Println("read common error:", err)
 		return nil, err
 	}
 	return chen, nil

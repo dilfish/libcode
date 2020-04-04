@@ -7,6 +7,9 @@
 ### a general encoder/decoder for Chinese obfuscation
 ### inspired by https://sym233.github.io/core-values-encoder/
 
+#### how to use
+- please see app/icved/icved.go
+
 #### encode:
 - 2500 common used Chinese character: map to 1-2500, map to 9 based number list with prefix 11
 - unicode Chinese character: map to [1, unicode Chinese code block size], map to 9 based number list with prefix 10

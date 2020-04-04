@@ -2,6 +2,8 @@
 
 package libcode
 
+import "log"
+
 // EncodeUnicode used the chinese unicode map as
 // offset to map a list of word
 // ref: www.unicode.org/versions/Uncide5.0.0/ch12.pdf
@@ -22,6 +24,7 @@ func EncodeUnicode(r rune) int32 {
 func DecodeUnicode(code int32) rune {
 	code = code + 0x3400
 	if code < 0x3400 || code > 0x9fff {
+		log.Println("bad unicode:", code)
 		return BadRune
 	}
 	return rune(code)

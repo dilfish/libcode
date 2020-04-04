@@ -38,7 +38,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func Engine() http.Handler {
-	lc, err := libcode.NewLibCode("core_values.txt", "common_han.txt")
+	lc, err := libcode.NewLibCode("core_values.txt", "common_han.txt", 0)
 	if err != nil {
 		panic(err)
 	}

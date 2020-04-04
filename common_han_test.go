@@ -4,6 +4,7 @@
 package libcode
 
 import (
+	"errors"
 	"testing"
 	"unicode/utf8"
 )
@@ -40,7 +41,7 @@ func TestDecodeCommonHan(t *testing.T) {
 
 func TestBadFile(t *testing.T) {
 	_, err := NewCommonHan("common_han.go")
-	if err != errBadHanFile {
+	if !errors.Is(err, errBadHanFile) {
 		t.Error("expect errBadHanFile, got", err)
 	}
 }
