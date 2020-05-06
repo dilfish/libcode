@@ -7,9 +7,7 @@ before_install:
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 script:
-- go test -race -coverprofile=coverage.txt -covermode=atomic
 - go build
-- go test
 env:
   global:
     secure: Ryc7BqmhpXdh6OT/TTEKhwod5K9GDz7ecsz2/yFYF9xLZxbftvHCZFcYbsTgKWdxlKRylyFVGhSdZ69+X2QeyRaJDzmCAftRrsfF4Ruxgr0nP+MbSvRaebyIxjtXfNw1VFvCgHWHVIxe4C7Tgo9JVas5dI0W77Ain/LPrxRa6QBGmKmjpG9FX2Hgabd0qO7Y3dM42XuikWMXWKfwYOddRO+yQySePBm7barOsd3gFpI+ekVdW7ibOtX7Bwg5xZAufPDBA/iodeW79YxQqt4bB9H90t8ecSAfDo7pnP81+qUH5oqLOyYWzwk8XRWO28+YrG+Yh14+7B5c6hcIQRsgbA+ubALZdeLn97twk7Ll6GST9vNk+TNA66jJz1Yxc6d9fRa2kcPWdaHrbR9aCEnCreTTdUpcT/w1YwWtQGu7SNsznas2Ho5CdjMBbTKIzGGA+tC8KEvb2snvGIJaXeSTCNd+tGSc92thsIN1OAkiSosvxrMfm5ArX33R84hGUIm/ioMEcIwRjuKn8LRqe2ZU5YwNei33tWzapmZtNL3tKkrYGVvnQriYJSXTlWoerM/XQKKcBaNMYz0YHR+ejk3IVdPCOkvzRGVcGm3YcW49LNdEB2TXcft5SsvFuPa2JNAY1snIwrtgYB6Ml7TLZEssL5PwnglJaA7Pyb39a6OB6Zw=
