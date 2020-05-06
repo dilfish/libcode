@@ -6,7 +6,22 @@ package libcode
 import (
 	"errors"
 	"testing"
+	fuzz "github.com/google/gofuzz"
 )
+
+
+func TestGenerationalFuzzerDecoder(t *testing.T) {
+	f := fuzz.New()
+	var input string
+	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt", 0)
+	if err != nil {
+		t.Error("expect fuzz init good, got", err)
+	}
+	for {
+		f.Fuzz(&input)
+		lc.Decoder(input)
+	}
+}
 
 func TestDecoder(t *testing.T) {
 	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt", 0)
