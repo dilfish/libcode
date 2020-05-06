@@ -6,8 +6,8 @@ package libcode
 var lc *LibCode
 
 
-func Fuzz(input string) int {
-	lc.Decoder(input)
+func Fuzz(data []byte) int {
+	lc.Decoder(string(data))
 	return 0
 }
 
