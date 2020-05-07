@@ -1,23 +1,20 @@
+dist: bionic
 language: go
-
 go:
-- 1.14.x
-
+    - 1.12.x
 services:
-  - docker
-
+    - docker
 env:
   global:
-    secure: Ryc7BqmhpXdh6OT/TTEKhwod5K9GDz7ecsz2/yFYF9xLZxbftvHCZFcYbsTgKWdxlKRylyFVGhSdZ69+X2QeyRaJDzmCAftRrsfF4Ruxgr0nP+MbSvRaebyIxjtXfNw1VFvCgHWHVIxe4C7Tgo9JVas5dI0W77Ain/LPrxRa6QBGmKmjpG9FX2Hgabd0qO7Y3dM42XuikWMXWKfwYOddRO+yQySePBm7barOsd3gFpI+ekVdW7ibOtX7Bwg5xZAufPDBA/iodeW79YxQqt4bB9H90t8ecSAfDo7pnP81+qUH5oqLOyYWzwk8XRWO28+YrG+Yh14+7B5c6hcIQRsgbA+ubALZdeLn97twk7Ll6GST9vNk+TNA66jJz1Yxc6d9fRa2kcPWdaHrbR9aCEnCreTTdUpcT/w1YwWtQGu7SNsznas2Ho5CdjMBbTKIzGGA+tC8KEvb2snvGIJaXeSTCNd+tGSc92thsIN1OAkiSosvxrMfm5ArX33R84hGUIm/ioMEcIwRjuKn8LRqe2ZU5YwNei33tWzapmZtNL3tKkrYGVvnQriYJSXTlWoerM/XQKKcBaNMYz0YHR+ejk3IVdPCOkvzRGVcGm3YcW49LNdEB2TXcft5SsvFuPa2JNAY1snIwrtgYB6Ml7TLZEssL5PwnglJaA7Pyb39a6OB6Zw=
+    secure: YnPUCdfYJvln7KIEVrOIRMwuEdDK+yCa3ySotWcshSsnkCiAv8DUvUJMWCL9fsB9z7izcmI407wlFavh797SnmIRHR+/1op4HTNMTZ+0oSaZZBM9GtWf1dMKwEo4P2eBfcI2BimmCZDIWlTHg3S4yHxc6a737J/sYIcGpePeu2MgoXeatKyCiW5h34p3IebqnUkkJILpIXTe89pv8GFjcCS5tSfmMELohZk9JiT3wqcVuiLcSdYHDgsmU9Ukf3na58RyDMe7gZDPAO6G+3R7aESU9+WYTAgrZGIZoaJmD61s0RRTZ6nVDssGXkY6HIo8GfiCwK6APki2qzv1VuZV/lyp/GENqRAaDxBT4qyO5ZusvDpPKC6gH0uKmJwZtgwjURXMc5Bj7hjPztkBNF9D0nPts8zI+xkieroYTst9pz1lW8G7c2yoAYmbtNFxp9QvWqFtWKYdiyTFuoSGNHxXXhH8lJtxB+NSh34FUAfXIjzGOdQ6RkLhUxLELKB/h1RGScy1Cl4rVUrpLp2kuFPN24WDXDDC2431XzQGyEZOBNe+o+zkljan49JPAl1/sz0nwzOORNHJ68LyGyqWhiBm/S0+HNM6Hd24jXMJp0IcXaNgCRGhUGn8BH/GZiCP2vSokEPGrnqb6Qc8NFXR5PPouuKNXr0kSprUlf7pVwd9jto=
 jobs:
   include:
-    - stage: Build, Unit-Tests & Fuzz-Tests
-      go: 1.14.x
-      script:
-        - ./fuzzit.sh local-regression
-
-    - stage: Fuzzit (Fuzzing)
-      if: branch = master AND type IN (push)
-      go: 1.14.x
-      script:
-        - ./fuzzit.sh fuzzing
+  - stage: Build, Unit-Tests & Fuzz-Tests
+    go: 1.14.x
+    script:
+    - "./fuzzit.sh local-regression"
+  - stage: Fuzzit (Fuzzing)
+    if: branch = master AND type IN (push)
+    go: 1.14.x
+    script:
+    - "./fuzzit.sh fuzzing"
