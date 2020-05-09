@@ -1,11 +1,21 @@
 dist: bionic
+
 language: go
+
 go:
-- 1.12.x
+- 1.14.x
+
 services:
 - docker
+
 after_success:
 - bash <(curl -s https://codecov.io/bash)
+
+script:
+  - go test -run Libcode -race -coverprofile=coverage.txt -covermode=atomic
+  - go build
+  - go test -run Libcode
+
 jobs:
   include:
   - stage: Build, Unit-Tests & Fuzz-Tests
