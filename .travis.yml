@@ -4,6 +4,8 @@ go:
 - 1.12.x
 services:
 - docker
+after_success:
+- bash <(curl -s https://codecov.io/bash)
 jobs:
   include:
   - stage: Build, Unit-Tests & Fuzz-Tests
