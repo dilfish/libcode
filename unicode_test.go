@@ -7,7 +7,7 @@ import (
 	"unicode/utf8"
 )
 
-func TestEncodeUnicode(t *testing.T) {
+func TestLibcodeEncodeUnicode(t *testing.T) {
 	table := []int32{
 		0x33ff, -1,
 		0xa000, -1,
@@ -23,7 +23,7 @@ func TestEncodeUnicode(t *testing.T) {
 	}
 }
 
-func TestDecodeUnicode(t *testing.T) {
+func TestLibcodeDecodeUnicode(t *testing.T) {
 	table := []int32{
 		-1, utf8.RuneError,
 		0x9fff, utf8.RuneError,

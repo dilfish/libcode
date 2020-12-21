@@ -3,9 +3,13 @@
 [![codecov](https://codecov.io/gh/dilfish/libcode/branch/master/graph/badge.svg)](https://codecov.io/gh/dilfish/libcode)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](github.com/dilfish/libcode)
 [![GoDoc](https://godoc.org/github.com/dilfish/libcode?status.svg)](https://godoc.org/github.com/dilfish/libcode)
+[![fuzzit](https://app.fuzzit.dev/static/fuzzit-passing-green.svg)](https://app.fuzzit.dev)
 
 ### a general encoder/decoder for Chinese obfuscation
 ### inspired by https://sym233.github.io/core-values-encoder/
+
+#### how to use
+- please see app/icved/icved.go
 
 #### encode:
 - 2500 common used Chinese character: map to 1-2500, map to 9 based number list with prefix 11

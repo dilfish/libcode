@@ -4,11 +4,12 @@
 package libcode
 
 import (
+	"errors"
 	"testing"
 	"unicode/utf8"
 )
 
-func TestEncodeCommonHan(t *testing.T) {
+func TestLibcodeEncodeCommonHan(t *testing.T) {
 	ch, err := NewCommonHan("app/icved/common_han.txt")
 	if err != nil {
 		t.Error("expect nil, got", err)
@@ -23,7 +24,7 @@ func TestEncodeCommonHan(t *testing.T) {
 	}
 }
 
-func TestDecodeCommonHan(t *testing.T) {
+func TestLibcodeDecodeCommonHan(t *testing.T) {
 	ch, err := NewCommonHan("app/icved/common_han.txt")
 	if err != nil {
 		t.Error("expect nil, got", err)
@@ -38,9 +39,9 @@ func TestDecodeCommonHan(t *testing.T) {
 	}
 }
 
-func TestBadFile(t *testing.T) {
+func TestLibcodeBadFile(t *testing.T) {
 	_, err := NewCommonHan("common_han.go")
-	if err != errBadHanFile {
+	if !errors.Is(err, errBadHanFile) {
 		t.Error("expect errBadHanFile, got", err)
 	}
 }

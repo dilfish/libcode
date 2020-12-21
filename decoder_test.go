@@ -4,11 +4,13 @@
 package libcode
 
 import (
+	"errors"
 	"testing"
+	fuzz "github.com/google/gofuzz"
 )
 
-func TestDecoder(t *testing.T) {
-	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt")
+func TestLibcodeDecoder(t *testing.T) {
+	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt", 0)
 	if err != nil {
 		t.Error("expect init good, got", err)
 	}
@@ -34,23 +36,23 @@ func TestDecoder(t *testing.T) {
 		t.Error("expect abc, got", r)
 	}
 	_, err = lc.Decoder("真")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err)
 	}
 	_, err = lc.Decoder("测试")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err)
 	}
 	_, err = lc.Decoder("民主民主民主")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err)
 	}
 	r, err = lc.Decoder("诚信民主民主民主诚信")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err, r)
 	}
 	r, err = lc.Decoder("友善")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err, r)
 	}
 	str := "友善法治法治法治法治法治法治法治法治法治"
@@ -58,17 +60,17 @@ func TestDecoder(t *testing.T) {
 	str = str + "法治法治法治法治法治法治法治法治法治法治法治"
 	str = str + "法治法治法治法治法治"
 	r, err = lc.Decoder(str)
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err, r)
 	}
 	_, err = lc.Decoder("友善友善")
-	if err != ErrBadCoreValueStr {
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("exptect nil, got", err)
 	}
 }
 
-func TestEncoder(t *testing.T) {
-	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt")
+func TestLibcodeEncoder(t *testing.T) {
+	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt", 0)
 	if err != nil {
 		t.Error("expect init good, got", err)
 	}
@@ -86,17 +88,30 @@ func TestEncoder(t *testing.T) {
 	}
 }
 
-func TestInit(t *testing.T) {
-	_, err := NewLibCode("decoder.go", "")
-	if err != ErrBadCoreValueStr {
+func TestLibcodeInit(t *testing.T) {
+	_, err := NewLibCode("decoder.go", "", 0)
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err)
 	}
-	_, err = NewLibCode("app/icved/core_values.txt", "common_han.go")
-	if err != errBadHanFile {
+	_, err = NewLibCode("app/icved/core_values.txt", "common_han.go", 0)
+	if !errors.Is(err, errBadHanFile) {
 		t.Error("expect errBadHanFile, got", err)
 	}
-	_, err = NewLibCode("testdata/core_values.txt", "")
-	if err != ErrBadCoreValueStr {
+	_, err = NewLibCode("testdata/core_values.txt", "", 0)
+	if !errors.Is(err, ErrBadCoreValueStr) {
 		t.Error("expect ErrBadCoreValueStr, got", err)
+	}
+}
+
+func TestGenerationalFuzzerDecoder(t *testing.T) {
+	f := fuzz.New()
+	var input string
+	lc, err := NewLibCode("app/icved/core_values.txt", "app/icved/common_han.txt", 0)
+	if err != nil {
+		t.Error("expect fuzz init good, got", err)
+	}
+	for {
+		f.Fuzz(&input)
+		lc.Decoder(input)
 	}
 }
