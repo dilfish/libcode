@@ -4,9 +4,10 @@ package libcode
 
 import (
 	"errors"
-	"github.com/dilfish/tools"
 	"log"
 	"unicode/utf8"
+
+	"github.com/dilfish/tools"
 )
 
 // CommonHanEncoder is the least priority encoder for libcode

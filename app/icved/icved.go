@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/dilfish/libcode"
-	"github.com/dilfish/tools"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/dilfish/libcode"
+	"github.com/dilfish/tools"
 )
 
 var flagP = flag.String("d", "", "decode message")

@@ -4,7 +4,7 @@ set -xe
 ## Build fuzzing targets
 ## go-fuzz doesn't support modules for now, so ensure we do everything
 ## in the old style GOPATH way
-export GO111MODULE="off"
+export GO111MODULE="on"
 
 ## Install go-fuzz
 go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build

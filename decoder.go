@@ -4,10 +4,11 @@ package libcode
 
 import (
 	"errors"
-	"github.com/dilfish/tools"
 	"log"
 	"math"
 	"unicode/utf8"
+
+	"github.com/dilfish/tools"
 )
 
 // ErrBadCoreValueStr indicate an invalid string which could

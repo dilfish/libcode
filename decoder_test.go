@@ -6,6 +6,7 @@ package libcode
 import (
 	"errors"
 	"testing"
+
 	fuzz "github.com/google/gofuzz"
 )
 
