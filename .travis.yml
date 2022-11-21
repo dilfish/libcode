@@ -3,7 +3,7 @@ dist: bionic
 language: go
 
 go:
-- 1.15.x
+- 1.19.x
 
 services:
 - docker
@@ -15,18 +15,6 @@ script:
   - go test -run Libcode -race -coverprofile=coverage.txt -covermode=atomic
   - go build
   - go test -run Libcode
-
-jobs:
-  include:
-  - stage: Build, Unit-Tests & Fuzz-Tests
-    go: 1.14.x
-    script:
-    - "./fuzzit.sh local-regression"
-  - stage: Fuzzit (Fuzzing)
-    if: branch = master AND type IN (push)
-    go: 1.14.x
-    script:
-    - "./fuzzit.sh fuzzing"
 
 env:
   global:
