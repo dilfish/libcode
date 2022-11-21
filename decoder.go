@@ -8,7 +8,7 @@ import (
 	"math"
 	"unicode/utf8"
 
-	"github.com/dilfish/tools"
+	dio "github.com/dilfish/tools/io"
 )
 
 // ErrBadCoreValueStr indicate an invalid string which could
@@ -223,7 +223,7 @@ func NewLibCode(cv, ch string, offset int32) (*LibCode, error) {
 	lc.coreValueMap = make(map[string]int32)
 	lc.revCoreValueMap = make(map[int32]string)
 	lc.coreValueOffset = offset
-	err := tools.ReadLine(cv, lc.readCoreValue)
+	err := dio.ReadLine(cv, lc.readCoreValue)
 	if err != nil {
 		log.Println("read core value error:", err)
 		return nil, err

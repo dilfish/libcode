@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/dilfish/libcode"
-	"github.com/dilfish/tools"
+	dlogh "github.com/dilfish/tools/logh"
 )
 
 var flagP = flag.String("d", "", "decode message")
@@ -45,7 +45,7 @@ func Engine() http.Handler {
 	}
 	var h Handler
 	h.lc = lc
-	mux := tools.NewLogMux("./log.log", "icved")
+	mux := dlogh.NewLogMux("./log.log", "icved")
 	mux.GET("/", h.Handle)
 	return mux
 }

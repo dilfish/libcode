@@ -7,7 +7,7 @@ import (
 	"log"
 	"unicode/utf8"
 
-	"github.com/dilfish/tools"
+	dio "github.com/dilfish/tools/io"
 )
 
 // CommonHanEncoder is the least priority encoder for libcode
@@ -36,7 +36,7 @@ func (chen *CommonHanEncoder) _readCommon(w string) error {
 func (chen *CommonHanEncoder) readCommon(fn string) error {
 	chen.commonHan = make(map[rune]int)
 	chen.revCommonHan = make(map[int]rune)
-	return tools.ReadLine(fn, chen._readCommon)
+	return dio.ReadLine(fn, chen._readCommon)
 }
 
 // EncodeCommonHan encodes a word to int32 as it's unicode point
